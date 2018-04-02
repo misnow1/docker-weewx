@@ -1,7 +1,7 @@
 FROM jgoerzen/debian-base-security:stretch
 MAINTAINER John Goerzen <jgoerzen@complete.org>
 COPY setup/ /tmp/setup/
-ENV WEEWX_VERSION 3.7.1
+ENV WEEWX_VERSION 3.8.0
 # The font file is used for the generated images
 RUN mv /usr/sbin/policy-rc.d.disabled /usr/sbin/policy-rc.d && \
     apt-get update && \
@@ -14,4 +14,5 @@ RUN mv /usr/sbin/policy-rc.d.disabled /usr/sbin/policy-rc.d && \
     mkdir -p /var/www/html/weewx
 
 VOLUME ["/var/lib/weewx"]
+VOLUME ["/var/www/html/weewx"]
 CMD ["/usr/local/bin/boot-debian-base"]
