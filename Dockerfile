@@ -1,18 +1,21 @@
-FROM jgoerzen/debian-base-security:stretch
-MAINTAINER John Goerzen <jgoerzen@complete.org>
+FROM local/c7-systemd
+
+MAINTAINER Michael Snow <sno.sno@gmail.com>
+
 COPY setup/ /tmp/setup/
 ENV WEEWX_VERSION 3.8.0
+
 # The font file is used for the generated images
-RUN mv /usr/sbin/policy-rc.d.disabled /usr/sbin/policy-rc.d && \
-    apt-get update && \
-    apt-get -y --no-install-recommends install ssh rsync fonts-freefont-ttf && \
+RUN yum update -y && \
+    yum install -y rsync wget initscripts libusb pyusb MySQL-python rsyslog && \
     /tmp/setup/setup.sh && \
-    apt-get -y -u dist-upgrade && \
-    apt-get clean && rm -rf /tmp/setup /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    /usr/local/bin/docker-wipelogs && \
-    mv /usr/sbin/policy-rc.d /usr/sbin/policy-rc.d.disabled && \
+    yum clean all && \
+    rm -rf rm -rf /var/cache/yum/* && \
+    rm -rf /tmp/setup /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     mkdir -p /var/www/html/weewx
 
+VOLUME ["/etc/weewx"]
 VOLUME ["/var/lib/weewx"]
 VOLUME ["/var/www/html/weewx"]
-CMD ["/usr/local/bin/boot-debian-base"]
+CMD ["/usr/sbin/init"]
+

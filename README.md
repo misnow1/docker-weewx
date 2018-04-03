@@ -29,15 +29,22 @@ pages to remote servers.
 
 You can download with:
 
-    docker pull jgoerzen/weewx
+    docker pull misnow1/weewx
 
-And run with something like this:
+Then create the container:
 
-    docker run -td \
-    --stop-signal=SIGPWR \
-    --hostname=weewx \
-    -v /weatherdir:/var/lib/weewx:rw \
-    --name=weewx jgoerzen/weewx
+    docker create -it --cap-add SYS_ADMIN --tmpfs /run \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -v /opt/docker/volumes/weewx/conf:/etc/weewx:rw \
+    -v /opt/docker/volumes/weewx/lib:/var/lib/weewx:rw \
+    -v /home/weewx/public_html:/home/weewx/public_html:rw \
+    -v /etc/localtime:/etc/localtime:ro \
+    -v /dev/bus/usb:/dev/bus/usb --privileged \
+    --name weewx misnow1/docker-weewx
+
+And start it:
+
+    docker start weewx
 
 You almost certainly want to mount something over `/var/lib/weewx` so your
 important data is preserved.  You will also want to have a way to preserve
