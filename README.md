@@ -15,17 +15,18 @@ on the host and presented to the Docker container via ser2net.
 An increasing number of weather stations are network-enabled and
 can communicate directly to this system.
 
-You can view the [documentation for this image](https://github.com/jgoerzen/docker-weewx)
-on its Github page.  This image is based on my [debian-base-security](https://github.com/jgoerzen/docker-debian-base)
-image, which features automatic security updates to the operating system (though not WeeWX)
-enabled by default.
+You can view the [documentation for this image](https://github.com/misnow1/docker-weewx)
+on its Github page.  This image is based on the [c7-systemd image](https://hub.docker.com/_/centos/).
+In order to use this container, you must first build the c7-systemd image as indicated in the
+previous link.
 
-WeeWX is most typically used with a local sqlite database.  If you intend to
-use it with something else, you will probably need to install additional
-software in the container.
+This image uses systemd as described in the previous link and requires `CAP_SYS_ADMIN` and
+`/sys/fs/cgroups` to be mounted in the running container. Additionally, for USB stations to work,
+the USB device tree must be presented to the container and the container must be running in
+privileged mode (TODO: fix this).
 
-I have provided rsync and ssh, however, since they are commonly used to push
-pages to remote servers.
+This image provides the MySQL library for python so that a MySQL database can be used for
+persistent data.
 
 You can download with:
 
@@ -46,33 +47,25 @@ And start it:
 
     docker start weewx
 
-You almost certainly want to mount something over `/var/lib/weewx` so your
-important data is preserved.  You will also want to have a way to preserve
-the configuration in `/etc/weewx`.  By default, the `HTML_ROOT` value in
-`/etc/weewx/weewx.conf` lists `/var/www/html/weewx`, so this would be an
-excellent volume to export to a webserver container (such as my
-[jgoerzen/debian-base-apache](https://github.com/jgoerzen/docker-debian-base)).
-
 Consult the [WeeWX documentation](http://www.weewx.com/docs.html) for setup steps.
 
 # Logging
 
-Logging can be done either to Docker or in the container; see `DEBBASE_SYSLOG` as
-documented in the [docker-debian-base docs](https://github.com/jgoerzen/docker-debian-base).
+The container includes rsyslog and sends all weewx logs to /var/lib/weewx by default.
 
 # Source
 
-This is prepared by John Goerzen <jgoerzen@complete.org> and the source
-can be found at https://github.com/jgoerzen/docker-weewx
+This is prepared by Michael Snow and the source
+can be found at <https://github.com/misnow1/docker-weewx>
 
 # Security Status
 
-The Debian operating system is configured to automatically apply security patches.
-WeeWX, however, does not have such a feature.
+TODO: Document this.
 
 # Copyright
 
-Docker scripts, etc. are Copyright (c) 2017 John Goerzen.  
+The work in this repository is forked from <https://github.com/jgoerzen/docker-weewx>.
+Docker scripts, etc. are Copyright (c) 2017 John Goerzen.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -100,4 +93,3 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
 
 Additional software copyrights as noted.
-
